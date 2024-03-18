@@ -45,9 +45,9 @@ function App() {
   };
 
   const autoScrolling = () => {
-    const scrollSpeed = 50; // Kecepatan scroll (ms per pixel)
     const container = marqueeRef.current;
     let isScrolling = false;
+    let scrollSpeed = 50; // Kecepatan scroll (ms per pixel)
 
     const scroll = () => {
       if (!isScrolling) {
@@ -61,6 +61,15 @@ function App() {
         ) {
           // Jika sudah mencapai akhir, reset posisi scroll ke awal
           container.scrollTop = 0;
+        }
+
+        // Periksa apakah jumlah data kurang dari 5
+        if (setDailyLeaderboardData.length < 5) {
+          // Jika kurang dari 5, atur kecepatan scroll lebih lambat
+          scrollSpeed = 200;
+        } else {
+          // Jika 5 atau lebih, atur kecepatan scroll normal
+          scrollSpeed = 50;
         }
 
         setTimeout(() => {
@@ -107,7 +116,7 @@ function App() {
       </div>
       <div className="grid grid-cols-3 gap-8">
         <div className="px-auto">
-          <h1 className="mb-2 text-2xl font-bold">Daily Race</h1>
+          <h1 className="mb-2 text-2xl font-bold shadow-xl">Daily Race</h1>
           <div
             className="overflow-y-auto max-h-96"
             ref={marqueeRef}
@@ -118,40 +127,42 @@ function App() {
                 key={index}
                 index={index}
                 title={player.nama}
-                icon={"pict"}
+                icon={null}
                 value={player.totalPoint}
               />
             ))}
           </div>
         </div>
         <div className="px-auto">
-          <h1 className="mb-2 text-2xl font-bold">Monthly Champions</h1>
+          <h1 className="mb-2 text-2xl font-bold shadow-xl">
+            Monthly Champions
+          </h1>
           {monthlyLeaderboardData.map((player, index) => (
             <LeaderboardCard
               key={index}
               index={index}
-              icon={"pict"}
+              icon={null}
               title={player.nama}
               value={player.totalPoint}
             />
           ))}
         </div>
         <div className="ml-auto">
-          <div className="px-10 py-4 pb-4 bg-blue-900 rounded-lg">
+          <div className="px-8 py-2 pb-4 bg-blue-900 rounded-lg shadow-2xl">
             <h1 className="mb-2 text-2xl font-bold text-center text-white">
               Summary
             </h1>
             <div className="grid gap-4 mb-4 grid-row-1 sm:grid-row-2 md:grid-row-3">
-              <Card title="Tanggal" value={todayDate} background="#4299e1" />
+              <Card title="DATE" value={todayDate} background="#9dd9f2" />
               <Card
-                title="Ticket closed this day"
+                title="TICKET/DAY"
                 value={ticketsClosedToday}
-                background="#4299e1"
+                background="#9dd9f2"
               />
               <Card
-                title="Ticket closed this month"
+                title="CLOSED TICKET/MONTH : "
                 value={ticketsClosedThisMonth}
-                background="#4299e1"
+                background="#9dd9f2"
               />
             </div>
           </div>
