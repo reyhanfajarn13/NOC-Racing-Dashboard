@@ -22,7 +22,7 @@ function App() {
 
   const fetchDailyLeaderboard = async () => {
     try {
-      const sortedData = [...leaderboardData].sort(
+      const sortedData = await [...leaderboardData].sort(
         (a, b) => b.totalPoint - a.totalPoint
       );
       setDailyLeaderboardData(sortedData);
@@ -33,7 +33,7 @@ function App() {
 
   const fetchMonthlyLeaderboard = async () => {
     try {
-      const sortedData = [...leaderboardData]
+      const sortedData = await [...leaderboardData]
         .sort((a, b) => b.totalPoint - a.totalPoint)
         .slice(0, 3);
       // Selecting top 3 leaderboard from the sorted data
@@ -111,12 +111,14 @@ function App() {
       <div className="left-0 w-full p-2 mb-4 bg-gray-200 border border-gray-300 rounded-lg shadow-md ">
         <div className="grid grid-cols-3 gap-2 border-zinc-700">
           <img src="/src/assets/Logo TBIG.png" className="max-w-28"></img>
-          <h1 className="text-3xl font-extrabold">NOC Agent Performance</h1>
+          <h1 className="text-2xl font-extrabold">NOC Agent Performance</h1>
         </div>
       </div>
       <div className="grid grid-cols-3 gap-8">
         <div className="px-auto">
-          <h1 className="mb-2 text-2xl font-bold shadow-xl">Daily Race</h1>
+          <h1 className="mb-2 text-2xl font-bold text-white bg-blue-900 rounded-md shadow-xl">
+            Daily Race
+          </h1>
           <div
             className="overflow-y-auto max-h-96"
             ref={marqueeRef}
@@ -128,13 +130,14 @@ function App() {
                 index={index}
                 title={player.nama}
                 icon={null}
+                shift={"shift 1"}
                 value={player.totalPoint}
               />
             ))}
           </div>
         </div>
         <div className="px-auto">
-          <h1 className="mb-2 text-2xl font-bold shadow-xl">
+          <h1 className="mb-2 text-2xl font-bold text-white bg-blue-900 rounded-md shadow-xl">
             Monthly Champions
           </h1>
           {monthlyLeaderboardData.map((player, index) => (
@@ -143,14 +146,15 @@ function App() {
               index={index}
               icon={null}
               title={player.nama}
+              shift={"Shift 1"}
               value={player.totalPoint}
             />
           ))}
         </div>
         <div className="ml-auto">
-          <div className="px-8 py-2 pb-4 bg-blue-900 rounded-lg shadow-2xl">
-            <h1 className="mb-2 text-2xl font-bold text-center text-white">
-              Summary
+          <div className="px-8 py-2 bg-blue-900 rounded-lg shadow-2xl">
+            <h1 className="mb-2 text-xl font-bold text-center text-white">
+              ====Summary====
             </h1>
             <div className="grid gap-4 mb-4 grid-row-1 sm:grid-row-2 md:grid-row-3">
               <Card title="DATE" value={todayDate} background="#9dd9f2" />
