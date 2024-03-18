@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import "./App.css";
 import { LeaderboardCard, Card } from "./leaderboardCard";
 import { leaderboardData } from "./data-controller";
@@ -18,6 +18,7 @@ function App() {
   const [runningText, setRunningText] = useState(
     "NOC Agent Performance Dashboard 2024 || NOC Agent Performance Dashboard 2024 || NOC Agent Performance Dashboard 2024 || NOC Agent Performance Dashboard 2024 "
   );
+  const marqueeRef = useRef(null);
 
   const fetchDailyLeaderboard = async () => {
     try {
@@ -43,9 +44,43 @@ function App() {
     }
   };
 
+  const autoScrolling = () => {
+    const scrollSpeed = 50; // Kecepatan scroll (ms per pixel)
+    const container = marqueeRef.current;
+    let isScrolling = false;
+
+    const scroll = () => {
+      if (!isScrolling) {
+        isScrolling = true;
+        container.scrollTop += 1; // Menyesuaikan dengan kecepatan scroll
+
+        // Cek apakah sudah mencapai akhir konten
+        if (
+          container.scrollTop >=
+          container.scrollHeight - container.clientHeight
+        ) {
+          // Jika sudah mencapai akhir, reset posisi scroll ke awal
+          container.scrollTop = 0;
+        }
+
+        setTimeout(() => {
+          isScrolling = false;
+        }, scrollSpeed);
+      }
+    };
+
+    const interval = setInterval(scroll, 20); // Mengatur interval untuk memanggil fungsi scroll
+
+    // Memberhentikan interval ketika komponen tidak lagi ter-render
+    return () => {
+      clearInterval(interval);
+    };
+  };
+
   useEffect(() => {
     fetchMonthlyLeaderboard();
     fetchDailyLeaderboard();
+    autoScrolling();
     const interval = setInterval(() => {
       // Contoh penggunaan: mengubah running text menjadi waktu sekarang
       setRunningText(
@@ -64,15 +99,20 @@ function App() {
 
   return (
     <div className="container py-0 max-w-screen-2xl">
-      <div className="left-0 w-full p-4 mb-8 bg-gray-200 border border-gray-300 rounded-lg shadow-md ">
-        <div className="grid grid-cols-2 gap-8 border-zinc-700">
+      <div className="left-0 w-full p-2 mb-4 bg-gray-200 border border-gray-300 rounded-lg shadow-md ">
+        <div className="grid grid-cols-3 gap-2 border-zinc-700">
+          <img src="/src/assets/Logo TBIG.png" className="max-w-28"></img>
           <h1 className="text-3xl font-extrabold">NOC Agent Performance</h1>
         </div>
       </div>
       <div className="grid grid-cols-3 gap-8">
         <div className="px-auto">
-          <h1 className="mb-4 text-2xl font-bold">Daily Race</h1>
-          <div className="overflow-y-auto max-h-96" id="leaderboard-container">
+          <h1 className="mb-2 text-2xl font-bold">Daily Race</h1>
+          <div
+            className="overflow-y-auto max-h-96"
+            ref={marqueeRef}
+            id="leaderboard-container"
+          >
             {dailyleaderboardData.map((player, index) => (
               <LeaderboardCard
                 key={index}
@@ -85,7 +125,7 @@ function App() {
           </div>
         </div>
         <div className="px-auto">
-          <h1 className="mb-4 text-2xl font-bold">Monthly Champions</h1>
+          <h1 className="mb-2 text-2xl font-bold">Monthly Champions</h1>
           {monthlyLeaderboardData.map((player, index) => (
             <LeaderboardCard
               key={index}
@@ -97,11 +137,11 @@ function App() {
           ))}
         </div>
         <div className="ml-auto">
-          <div className="px-10 py-4 mx-auto bg-blue-900 rounded-lg">
+          <div className="px-10 py-4 pb-4 bg-blue-900 rounded-lg">
             <h1 className="mb-2 text-2xl font-bold text-center text-white">
               Summary
             </h1>
-            <div className="grid gap-4 grid-row-1 sm:grid-row-2 md:grid-row-3">
+            <div className="grid gap-4 mb-4 grid-row-1 sm:grid-row-2 md:grid-row-3">
               <Card title="Tanggal" value={todayDate} background="#4299e1" />
               <Card
                 title="Ticket closed this day"
