@@ -1,6 +1,7 @@
 import { useEffect, useState, useRef } from "react";
 import "./App.css";
-import { LeaderboardCard, Card } from "./leaderboardCard";
+import { LeaderboardCard } from "./controller/leaderboardCard";
+import { Card } from "./controller/summaryCard";
 import { leaderboardData } from "./data-controller";
 
 function App() {
@@ -107,75 +108,79 @@ function App() {
   }, []);
 
   return (
-    <div className="container py-0 max-w-screen-2xl">
-      <div className="left-0 w-full p-2 mb-4 bg-gray-200 border border-gray-300 rounded-lg shadow-md ">
-        <div className="grid grid-cols-3 gap-2 border-zinc-700">
-          <img src="/src/assets/Logo TBIG.png" className="max-w-28"></img>
-          <h1 className="text-2xl font-extrabold">NOC Agent Performance</h1>
+    <>
+      <div className="container min-w-full min-h-full">
+        <div className="left-0 w-full p-2 mb-4 border border-gray-300 rounded-lg shadow-md bg-gradient-to-l from-slate-800 to-slate-300 ">
+          <div className="grid grid-cols-3 gap-2 border-zinc-700">
+            <img src="/src/assets/Logo TBIG.png" className="max-w-28"></img>
+            <h1 className="text-2xl font-extrabold text-slate-200">
+              NOC Agent Performance
+            </h1>
+          </div>
         </div>
-      </div>
-      <div className="grid grid-cols-3 gap-8">
-        <div className="px-auto">
-          <h1 className="mb-2 text-2xl font-bold text-white bg-blue-900 rounded-md shadow-xl">
-            Daily Race
-          </h1>
-          <div
-            className="overflow-y-auto max-h-96"
-            ref={marqueeRef}
-            id="leaderboard-container"
-          >
-            {dailyleaderboardData.map((player, index) => (
+        <div className="grid grid-cols-3 gap-8">
+          <div className="px-auto">
+            <h1 className="mb-2 text-2xl font-bold text-white rounded-md shadow-xl bg-gradient-to-r from-blue-800 to-sky-500">
+              Daily Race
+            </h1>
+            <div
+              className="overflow-y-auto max-h-96"
+              ref={marqueeRef}
+              id="leaderboard-container"
+            >
+              {dailyleaderboardData.map((player, index) => (
+                <LeaderboardCard
+                  key={index}
+                  index={index}
+                  title={player.nama}
+                  icon={null}
+                  shift={player.shift}
+                  value={player.totalPoint}
+                />
+              ))}
+            </div>
+          </div>
+          <div className="px-auto">
+            <h1 className="mb-2 text-2xl font-bold text-white bg-blue-900 rounded-md shadow-xl">
+              Monthly Champions
+            </h1>
+            {monthlyLeaderboardData.map((player, index) => (
               <LeaderboardCard
                 key={index}
                 index={index}
-                title={player.nama}
                 icon={null}
-                shift={"shift 1"}
+                title={player.nama}
+                shift={player.shift}
                 value={player.totalPoint}
               />
             ))}
           </div>
-        </div>
-        <div className="px-auto">
-          <h1 className="mb-2 text-2xl font-bold text-white bg-blue-900 rounded-md shadow-xl">
-            Monthly Champions
-          </h1>
-          {monthlyLeaderboardData.map((player, index) => (
-            <LeaderboardCard
-              key={index}
-              index={index}
-              icon={null}
-              title={player.nama}
-              shift={"Shift 1"}
-              value={player.totalPoint}
-            />
-          ))}
-        </div>
-        <div className="ml-auto">
-          <div className="px-8 py-2 bg-blue-900 rounded-lg shadow-2xl">
-            <h1 className="mb-2 text-xl font-bold text-center text-white">
-              ====Summary====
-            </h1>
-            <div className="grid gap-4 mb-4 grid-row-1 sm:grid-row-2 md:grid-row-3">
-              <Card title="DATE" value={todayDate} background="#9dd9f2" />
-              <Card
-                title="TICKET/DAY"
-                value={ticketsClosedToday}
-                background="#9dd9f2"
-              />
-              <Card
-                title="CLOSED TICKET/MONTH : "
-                value={ticketsClosedThisMonth}
-                background="#9dd9f2"
-              />
+          <div className="ml-auto">
+            <div className="px-8 py-2 bg-blue-900 rounded-lg shadow-2xl">
+              <h1 className="mb-2 text-xl font-bold text-center text-white">
+                ====Summary====
+              </h1>
+              <div className="grid gap-4 mb-4 grid-row-1 sm:grid-row-2 md:grid-row-3">
+                <Card title="DATE" value={todayDate} background="#9dd9f2" />
+                <Card
+                  title="TICKET/DAY"
+                  value={ticketsClosedToday}
+                  background="#9dd9f2"
+                />
+                <Card
+                  title="CLOSED TICKET/MONTH : "
+                  value={ticketsClosedThisMonth}
+                  background="#9dd9f2"
+                />
+              </div>
             </div>
           </div>
         </div>
+        <div className="absolute bottom-0 left-0 w-full font-extrabold text-center text-white bg-gradient-to-r from-blue-800 to-sky-500">
+          <marquee>{runningText}</marquee>
+        </div>
       </div>
-      <div className="absolute bottom-0 left-0 w-full text-center text-white bg-gray-600">
-        <marquee>{runningText}</marquee>
-      </div>
-    </div>
+    </>
   );
 }
 
